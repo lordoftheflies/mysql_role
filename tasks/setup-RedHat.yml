@@ -1,17 +1,22 @@
 ---
 
 # TODO: make capable to download all versions.
-- name: Download MySQL Community Repo
+- name: "Download MySQL Community Repo"
   get_url:
     url: http://repo.mysql.com/mysql-community-release-el7-7.noarch.rpm
     dest: /tmp
 
-- name: Install MySQL Community Repo
+- name: "Install MySQL Community Repo"
+  become: yes
+  command: "rpm -ivh /tmp/mysql-community-release-el7-7.noarch.rpm"
+  ignore_errors: yes
+
+- name: "Install packages"
   become: yes
   yum:
-    name: /tmp/mysql-community-release-el7-7.noarch.rpm
+    name: "{{ mysql_packages }}"
     state: present
-    enablerepo: "{{ mysql_enablerepo | default(omit, true) }}"
+#    enablerepo: "{{ mysql_enablerepo | default(omit, true) }}"
   register: rh_mysql_install_packages
 
 - name: Ensure MySQL Python libraries are installed.
